@@ -2,14 +2,6 @@ body {
   margin: 0;
 }
 
-.hide {
-  display: none;
-}
-
-.error {
-  background-color: gray;
-}
-
 .container {
   font-family: Helvetica;
   color: #ffffff;
@@ -156,6 +148,13 @@ body {
   opacity: 0.9;
 }
 
+.hide {
+  display: none;
+}
+
+.error {
+  background-color: gray;
+}
 
 .comment-newline {
   white-space: pre-line;
