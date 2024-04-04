@@ -5,13 +5,6 @@ import {
   clearInput,
   prepareInput,
   delay,
-} from "./appfunc.js";
-import {
-  initEventListeners,
-  renderComments,
-  changeLikeButton,
-} from "./mainfunc.js";
-import {
   commentsLoadActive,
   commentsLoadHide,
   commentsAddActive,
@@ -20,9 +13,9 @@ import {
   addFormHide,
   addButtonActive,
   addButtonNonActive,
-  delButtonActive,
-  delButtonHide,
-} from "./auxilfunc.js";
+} from "./helpers.js";
+import { initEventListeners, changeLikeButton } from "./listeners.js";
+import { renderComments } from "./render.js";
 
 export let userComments = [];
 
@@ -38,7 +31,6 @@ export const addForm = document.querySelector(".add-form");
 commentsLoadActive();
 commentsAddHide();
 addFormActive();
-delButtonActive();
 
 function fetchPromiseArr() {
   getComments()
@@ -55,8 +47,7 @@ function fetchPromiseArr() {
 
       commentsLoadHide(); // скрываем надпись о загрузке комментариев с сервера
       commentsAddHide(); // скрываем надпись о добавлении записей на сервер
-      addFormActive(); // активируем форму добавления комментариев
-      delButtonActive(); // активируем кнопку "Удалить последний комментарий"
+      addFormActive(); // активируем форму добавления комментариев, активируем кнопку "Удалить последний комментарий"
 
       userComments = appComments;
       renderComments();
@@ -139,7 +130,8 @@ function handlePostClick() {
     return;
   }
 
-  postComments().then((response) => {
+  postComments()
+    .then((response) => {
       if (response.status === 500) throw new Error("Сервер недоступен");
       if (response.status === 201 || response.status === 200) {
         fetchPromiseArr();
@@ -161,7 +153,6 @@ function handlePostClick() {
         addButtonActive();
         commentsAddHide();
         addFormActive();
-        delButtonActive();
 
         renderComments();
       } else if (error.message === "Неправильный запрос") {
@@ -169,7 +160,6 @@ function handlePostClick() {
 
         commentsAddHide();
         addFormActive();
-        delButtonActive();
 
         renderComments();
         prepareInput();
@@ -178,7 +168,6 @@ function handlePostClick() {
 
         addButtonActive();
         commentsAddHide();
-        addFormActive();
       } else {
         console.log(error);
       }
@@ -186,7 +175,6 @@ function handlePostClick() {
 
   commentsAddActive();
   addFormHide();
-  delButtonHide();
 
   renderComments();
   // clearInput();

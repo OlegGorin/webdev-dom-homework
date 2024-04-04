@@ -1,4 +1,4 @@
-import { safeCode, formatDate, clearInput } from "./appfunc.js";
+import { safeCode, formatDate, clearInput } from "./helpers.js";
 import { nameInputElement, commentInputElement } from "./main.js";
 
 export const getComments = () => {
