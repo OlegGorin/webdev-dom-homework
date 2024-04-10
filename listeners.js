@@ -1,16 +1,10 @@
-import {
-  safeCode,
-  formatDate,
-  clearInput,
-  prepareInput,
-  delay,
-} from "./helpers.js";
-import { commentInputElement, userComments } from "./main.js";
-
-import { renderComments } from "./render.js";
+import { safeCode, formatDate, delay, prepareInput } from "./helpers.js";
+import { userComments } from "./main.js";
+import { renderComments } from "./renderTasks.js";
 
 export const initEventListeners = () => {
   const commentElements = document.querySelectorAll(".comment");
+  const commentInputElement = document.querySelector(".add-form-text");
   for (const commentElement of commentElements) {
     commentElement.addEventListener("click", (event) => {
       const index = commentElement.dataset.index;
@@ -41,7 +35,6 @@ export const changeLikeButton = () => {
         userComments[index].likeButton = !userComments[index].likeButton;
         userComments[index].isLikeLoading = false;
         renderComments();
-        prepareInput();
       });
     });
   }
