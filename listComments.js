@@ -1,17 +1,11 @@
-import { userComments, listElement } from "./main.js";
-import { initEventListeners, changeLikeButton } from "./listeners.js";
-
-export const renderComments = () => {
-  const commentHTML = userComments
-    .map((comment, index) => {
-      let lkBtn = "";
-      if (userComments[index].likeButton === true) {
-        lkBtn = "like-button -active-like";
-        // lkBtn = "like-button -loading-like";
-      } else {
-        lkBtn = "like-button";
-      }
-      return `<li data-index="${index}" class="comment">
+export const getListComments = ({ userComments, index }) => {
+  let lkBtn = "";
+  if (userComments[index].likeButton === true) {
+    lkBtn = "like-button -active-like";
+  } else {
+    lkBtn = "like-button";
+  }
+  return `<li data-index="${index}" class="comment">
           <div class="comment-header">
             <div>${userComments[index].name}</div>
             <div>${userComments[index].date}</div>
@@ -28,11 +22,4 @@ export const renderComments = () => {
             </div>
           </div>
         </li >`;
-    })
-    .join("");
-
-  listElement.innerHTML = commentHTML;
-
-  initEventListeners();
-  changeLikeButton();
 };
