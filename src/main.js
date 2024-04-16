@@ -1,7 +1,7 @@
-// import { format } from 'date-fns';
+import { format } from 'date-fns';
 import { getComments } from './api.js';
 import { renderComments } from './renderTasks.js';
-import { formatDate } from "./helpers.js";
+// import { formatDate } from "./helpers.js";
 
 export let userComments = [];
 
@@ -14,15 +14,15 @@ export function fetchPromiseArr() {
   getComments(token)    // 16.04.24
     .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
-        // const formatDate = format(
-        //   new Date(comment.date),
-        //   'yyyy-MM-dd hh.mm.ss',
-        // );
+        const formatDate = format(
+          new Date(comment.date),
+          'yyyy-MM-dd hh.mm.ss',
+        );
         return {
           id: comment.id,
           name: comment.author.name,
-          date: formatDate(comment.date),
-          // date: formatDate,
+          // date: formatDate(comment.date),
+          date: formatDate,
           text: comment.text,
           likesCounter: comment.likes,
           likeButton: false,
