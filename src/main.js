@@ -1,6 +1,6 @@
-import { format } from 'date-fns';
-import { getComments } from './api.js';
-import { renderComments } from './renderTasks.js';
+import { format } from "date-fns";
+import { getComments } from "./api.js";
+import { renderComments } from "./renderTasks.js";
 // import { formatDate } from "./helpers.js";
 
 export let userComments = [];
@@ -11,12 +11,12 @@ let token;
 
 export function fetchPromiseArr() {
   // getComments()      // 16.04.24
-  getComments(token)    // 16.04.24
+  getComments(token) // 16.04.24
     .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
         const formatDate = format(
           new Date(comment.date),
-          'yyyy-MM-dd hh.mm.ss',
+          "yyyy-MM-dd hh.mm.ss",
         );
         return {
           id: comment.id,
@@ -31,15 +31,15 @@ export function fetchPromiseArr() {
 
       userComments = appComments;
       // renderComments();        // 16.04.24
-      renderComments({ token });      // 16.04.24
+      renderComments({ token }); // 16.04.24
       isLoading = false;
     })
     .catch((error) => {
-      if (error.message === 'Сервер недоступен') {
-        alert('Сервер недоступен, попробуйте позже');
+      if (error.message === "Сервер недоступен") {
+        alert("Сервер недоступен, попробуйте позже");
         fetchPromiseArr();
-      } else if (error.message === 'Failed to fetch') {
-        alert('Неполадки интернета');
+      } else if (error.message === "Failed to fetch") {
+        alert("Неполадки интернета");
       } else {
         console.log(error);
       }
@@ -49,7 +49,7 @@ export function fetchPromiseArr() {
 
 fetchPromiseArr();
 
-console.log('It works!');
+console.log("It works!");
 
 // function renderMainPage() {
 //   document.querySelector('#app').innerHTML = `

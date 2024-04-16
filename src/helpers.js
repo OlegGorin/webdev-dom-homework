@@ -1,22 +1,22 @@
 export const sanitize = (string) => {
   return string
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 };
 
 export const formatDate = (date) => {
   return (
-    new Date(date).toLocaleDateString('default', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    })
-    + ' '
-    + new Date(date).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
+    new Date(date).toLocaleDateString("default", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    }) +
+    " " +
+    new Date(date).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     })
   );
 };

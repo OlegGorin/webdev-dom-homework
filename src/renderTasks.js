@@ -1,18 +1,22 @@
-import { userComments, fetchPromiseArr, isLoading } from './main.js';
-import { initEventListeners, changeLikeButton, textInput } from './listeners.js';
-import { getListComments } from './listComments.js';
-import { renderLogComment } from './renderLogin.js';
+import { userComments, fetchPromiseArr, isLoading } from "./main.js";
+import {
+  initEventListeners,
+  changeLikeButton,
+  textInput,
+} from "./listeners.js";
+import { getListComments } from "./listComments.js";
+import { renderLogComment } from "./renderLogin.js";
 import {
   postComments,
   deleteComment,
   token, // 16.04.24
   name,
   commentsURL,
-} from './api.js';
+} from "./api.js";
 
 // export const renderComments = ({ token }) => { // 16.04.24
 export const renderComments = () => {
-  const appElement = document.getElementById('app');
+  const appElement = document.getElementById("app");
   // вместо app получить container
   // const appElement = document.querySelector(".container");
   //  в него и будет помещаться  ? `<p class="adding">
@@ -22,10 +26,10 @@ export const renderComments = () => {
   const loadHTML = `
       <div class='container'>
         ${
-  isLoading
-    ? `<p class='adding'>Пожалуйста, подождите, загружаю комментарии...</p>`
-    : ''
-}
+          isLoading
+            ? `<p class='adding'>Пожалуйста, подождите, загружаю комментарии...</p>`
+            : ""
+        }
       </div>`;
 
   appElement.innerHTML = loadHTML;
@@ -35,7 +39,7 @@ export const renderComments = () => {
   } else {
     const commentHTML = userComments
       .map((comment, index) => getListComments({ userComments, index }))
-      .join('');
+      .join("");
 
     const appHTML = `
       <div class="container">
@@ -55,52 +59,52 @@ export const renderComments = () => {
 
     appElement.innerHTML = appHTML;
 
-    const addForm = document.querySelector('.add-form');
-    const nameInputElement = document.querySelector('.add-form-name');
-    const commentInputElement = document.querySelector('.add-form-text');
-    const addButtonElement = document.querySelector('.add-form-button');
-    const listElement = document.querySelector('.comments');
-    const deleteButtonElement = document.querySelector('.del-form-button');
-    const commentsAdding = document.querySelector('.adding');
+    const addForm = document.querySelector(".add-form");
+    const nameInputElement = document.querySelector(".add-form-name");
+    const commentInputElement = document.querySelector(".add-form-text");
+    const addButtonElement = document.querySelector(".add-form-button");
+    const listElement = document.querySelector(".comments");
+    const deleteButtonElement = document.querySelector(".del-form-button");
+    const commentsAdding = document.querySelector(".adding");
 
     listElement.innerHTML = commentHTML;
 
-    commentsAdding.classList.add('hide');
+    commentsAdding.classList.add("hide");
 
     initEventListeners();
     changeLikeButton();
 
     addButtonElement.disabled = true;
-    addButtonElement.classList.add('error');
+    addButtonElement.classList.add("error");
 
     const prepareInput = () => {
       addButtonElement.disabled = true;
-      addButtonElement.classList.add('error');
+      addButtonElement.classList.add("error");
     };
 
     nameInputElement.disabled = true;
-    nameInputElement.addEventListener('input', () => {
+    nameInputElement.addEventListener("input", () => {
       addButtonElement.disabled = false;
-      addButtonElement.classList.remove('error');
+      addButtonElement.classList.remove("error");
     });
 
     if (textInput === undefined) {
-      commentInputElement.value = '';
+      commentInputElement.value = "";
     } else {
       commentInputElement.value = textInput;
     }
-    commentInputElement.addEventListener('input', () => {
+    commentInputElement.addEventListener("input", () => {
       addButtonElement.disabled = false;
-      addButtonElement.classList.remove('error');
+      addButtonElement.classList.remove("error");
     });
 
     const handlePostClick = () => {
       if (
-        nameInputElement.value.trim() === ''
-        || commentInputElement.value.trim() === ''
+        nameInputElement.value.trim() === "" ||
+        commentInputElement.value.trim() === ""
       ) {
         addButtonElement.disabled = false;
-        addButtonElement.classList.remove('error');
+        addButtonElement.classList.remove("error");
         return;
       }
 
@@ -110,26 +114,26 @@ export const renderComments = () => {
         commentInputElement,
       })
         .then(() => {
-          addForm.classList.add('hide');
-          commentsAdding.classList.remove('hide');
+          addForm.classList.add("hide");
+          commentsAdding.classList.remove("hide");
           return fetchPromiseArr();
         })
         .then(() => {
-          commentInputElement.value = '';
+          commentInputElement.value = "";
         })
         .catch((error) => {
-          if (error.message === 'Сервер недоступен') {
-            alert('Сервер недоступен, попробуйте позже');
+          if (error.message === "Сервер недоступен") {
+            alert("Сервер недоступен, попробуйте позже");
             handlePostClick();
-          } else if (error.message === 'Нет авторизации') {
-            alert('Зарегистрируйтесь, пожалуйста');
-          } else if (error.message === 'Неправильный запрос') {
+          } else if (error.message === "Нет авторизации") {
+            alert("Зарегистрируйтесь, пожалуйста");
+          } else if (error.message === "Неправильный запрос") {
             alert(
               "Поля 'Имя' и 'Комментарий' должны содержать хотя бы 3 символа",
             );
             prepareInput();
-          } else if (error.message === 'Failed to fetch') {
-            alert('Неполадки интернета');
+          } else if (error.message === "Failed to fetch") {
+            alert("Неполадки интернета");
           } else {
             console.log(error);
           }
@@ -137,10 +141,10 @@ export const renderComments = () => {
       // addForm.classList.add('hide');
     };
 
-    addButtonElement.addEventListener('click', handlePostClick);
+    addButtonElement.addEventListener("click", handlePostClick);
 
-    document.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
+    document.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
         handlePostClick();
       }
     });
@@ -160,24 +164,24 @@ export const renderComments = () => {
 
       return deleteComment({ token, commentId })
         .then(() => {
-          commentInputElement.value = '';
+          commentInputElement.value = "";
           return fetchPromiseArr();
         })
         .catch((error) => {
-          if (error.message === 'Сервер недоступен') {
-            alert('Сервер недоступен, попробуйте позже');
-          } else if (error.message === 'Нет авторизации') {
-            alert('Зарегистрируйтесь, пожалуйста');
-          } else if (error.message === 'Страница недоступна') {
+          if (error.message === "Сервер недоступен") {
+            alert("Сервер недоступен, попробуйте позже");
+          } else if (error.message === "Нет авторизации") {
+            alert("Зарегистрируйтесь, пожалуйста");
+          } else if (error.message === "Страница недоступна") {
             alert(`Страница ${commentsURL}/${commentId} не найдена`);
-          } else if (error.message === 'Failed to fetch') {
-            alert('Неполадки интернета');
+          } else if (error.message === "Failed to fetch") {
+            alert("Неполадки интернета");
           } else {
             console.log(error);
           }
         });
     };
 
-    deleteButtonElement.addEventListener('click', deleteLastComment);
+    deleteButtonElement.addEventListener("click", deleteLastComment);
   }
 };
