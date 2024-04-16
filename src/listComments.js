@@ -1,9 +1,9 @@
 export const getListComments = ({ userComments, index }) => {
-  let lkBtn = "";
+  let lkBtn = '';
   if (userComments[index].likeButton === true) {
-    lkBtn = "like-button -active-like";
+    lkBtn = 'like-button -active-like';
   } else {
-    lkBtn = "like-button";
+    lkBtn = 'like-button';
   }
   return `<li data-index="${index}" class="comment">
           <div class="comment-header">

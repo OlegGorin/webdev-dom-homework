@@ -123,10 +123,11 @@ body {
 .add-form-row {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .add-form-button {
+  display: block;
   margin-top: 24px;
   font-size: 24px;
   padding: 10px 20px;
