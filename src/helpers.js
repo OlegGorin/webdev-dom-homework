@@ -22,7 +22,7 @@ export const formatDate = (date) => {
 };
 
 // export const clearInput = ({ commentInputElement }) => {
-//   commentInputElement.value = '';
+//   commentInputElement.value = "";
 // };
 
 // export const prepareInput = ({ addButtonElement }) => {
