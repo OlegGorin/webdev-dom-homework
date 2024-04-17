@@ -1,6 +1,16 @@
-import { fetchPromiseArr, userComments } from "./main.js";
+// import { trim } from 'lodash';
+
+// import { fetchPromiseArr, userComments } from './main.js';
+import { userComments } from "./main.js";
 import { getListComments } from "./listComments.js";
-import { loginUser, regUser, token, name, setToken, setName } from "./api.js";
+import {
+  loginUser,
+  regUser,
+  // token,
+  // name,
+  setToken,
+  setName,
+} from "./api.js";
 
 export const renderLogComment = ({ fetchPromiseArr }) => {
   let isRegMode = false;
@@ -20,46 +30,43 @@ export const renderLogComment = ({ fetchPromiseArr }) => {
 
   appElement.innerHTML = appHTML;
 
-  const logElement = document.getElementById("login-link");
-
   document.getElementById("login-link").addEventListener("click", () => {
     const renderLogForm = () => {
-      const appHTML = `
-            <div class="container">
-                <div class="form-login">
-                    <h3 class="form-title">Форма
-                    ${!isRegMode ? "входа" : "регистрации"}</h3>
-                    <div class="form-input">
-                        ${!isRegMode
-          ? ""
-          : `<input type="text" id="name-input" class="input" placeholder="Введите ваше имя" />`
-        }
-                        <input type="text" id="login-input" class="input" placeholder="Введите логин" />
-                        <input type="text" id="password-input" class="input" placeholder="Введите пароль" />
-                        <button id="login-button" class="button">
-                            ${!isRegMode ? "Войти" : "Зарегистрироваться"
-        }</button>
-                        <a id="login-switch" class="login-switch" href="#">
-                            ${isRegMode ? "Войти" : "Зарегистрироваться"}</a>
-                    </div>
-                </div>
-            </div>`;
-      appElement.innerHTML = appHTML;
+      const logHTML = `
+        <div class="container">
+          <div class="form-login">
+            <h3 class="form-title">Форма
+              ${!isRegMode ? "входа" : "регистрации"}</h3>
+              <div class="form-input">
+  ${
+    !isRegMode
+      ? " "
+      : `<input type='text' id='name-input' class='input' placeholder='Введите ваше имя' />`
+  }
+              <input type="text" id="login-input" class="input" placeholder="Введите логин" />
+              <input type="text" id="password-input" class="input" placeholder="Введите пароль" />
+              <button id="login-button" class="button">
+${!isRegMode ? "Войти" : "Зарегистрироваться"}</button>
+              <a id="login-switch" class="login-switch" href="#">
+                ${isRegMode ? "Войти" : "Зарегистрироваться"}</a>
+            </div>
+          </div>
+        </div>`;
+      appElement.innerHTML = logHTML;
 
       document.querySelector(".login-switch").addEventListener("click", () => {
         isRegMode = !isRegMode;
         renderLogForm();
       });
 
-      const buttonElement = document.getElementById("login-button");
       const nameInputElement = document.getElementById("name-input");
       const loginInputElement = document.getElementById("login-input");
       const passwordInputElement = document.getElementById("password-input");
 
       document.getElementById("login-button").addEventListener("click", () => {
         if (!isRegMode) {
-          const login = loginInputElement.value;
-          const password = passwordInputElement.value;
+          const login = loginInputElement.value.trim();
+          const password = passwordInputElement.value.trim();
 
           if (!login) {
             alert("Введите логин");
@@ -71,16 +78,14 @@ export const renderLogComment = ({ fetchPromiseArr }) => {
             return;
           }
 
-          loginUser({
-            login: login,
-            password: password,
-          })
+          loginUser({ login, password })
             .then((responseData) => {
               setToken(`Bearer ${responseData.user.token}`);
               setName(responseData.user.name);
-              console.log(`Bearer ${responseData.user.token}`);
+              console.log(responseData.user.token);
               console.log(responseData.user.name);
               fetchPromiseArr();
+              // вместо fetchPromiseArr() надо запускать renderMainPage()
             })
             .catch((error) => {
               if (error.message === "Сервер недоступен") {
@@ -94,10 +99,19 @@ export const renderLogComment = ({ fetchPromiseArr }) => {
               }
             });
         } else {
+          const name = nameInputElement.value.trim();
+          const login = loginInputElement.value.trim();
+          const password = passwordInputElement.value.trim();
 
-          const name = nameInputElement.value;
-          const login = loginInputElement.value;
-          const password = passwordInputElement.value;
+          if (name === "") {
+            nameInputElement.value = "";
+          }
+          if (login === "") {
+            loginInputElement.value = "";
+          }
+          if (password === "") {
+            passwordInputElement.value = "";
+          }
 
           if (!name) {
             alert("Введите имя");
@@ -114,15 +128,11 @@ export const renderLogComment = ({ fetchPromiseArr }) => {
             return;
           }
 
-          regUser({
-            login: login,
-            password: password,
-            name: name,
-          })
+          regUser({ login, password, name })
             .then((responseData) => {
               setToken(`Bearer ${responseData.user.token}`);
               setName(responseData.user.name);
-              console.log(`Bearer ${responseData.user.token}`);
+              console.log(responseData.user.token);
               console.log(responseData.user.name);
               fetchPromiseArr();
             })
@@ -132,13 +142,14 @@ export const renderLogComment = ({ fetchPromiseArr }) => {
                 fetchPromiseArr();
               } else if (error.message === "Нет авторизации") {
                 alert(error.message);
+              } else if (error.message === "Ошибка авторизации") {
+                alert("Такой пользователь уже существует");
               } else {
                 alert("Кажется, у вас сломался интернет, попробуйте позже");
                 console.log(error);
               }
             });
         }
-
       });
     };
     renderLogForm();

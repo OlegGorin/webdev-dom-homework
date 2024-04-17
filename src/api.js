@@ -1,10 +1,11 @@
-import { safeCode, formatDate } from "./helpers.js";
+import { sanitize } from "./helpers.js";
 
-const commentsURL = "https://wedev-api.sky.pro/api/v1/OlegGorin/comments";
+export const commentsURL =
+  "https://wedev-api.sky.pro/api/v2/OlegGorin/comments";
 const loginURL = "https://wedev-api.sky.pro/api/user/login";
 const userURL = "https://wedev-api.sky.pro/api/user";
 
-export let token;
+export let token; // 16.04.24
 export const setToken = (newToken) => {
   token = newToken;
 };
@@ -17,7 +18,7 @@ export const getComments = () => {
   return fetch(commentsURL, {
     method: "GET",
     headers: {
-      Autorization: `Bearer ${token}`,
+      Authorization: token,
     },
   }).then((response) => {
     if (response.status === 401) {
@@ -25,35 +26,74 @@ export const getComments = () => {
     } else if (response.status === 500) {
       throw new Error("Сервер недоступен");
     } else if (response.status === 201 || response.status === 200) {
-    // } else {
       return response.json();
     }
   });
 };
 
 export const postComments = ({
-  token,
+  // token,
   nameInputElement,
   commentInputElement,
 }) => {
   return fetch(commentsURL, {
     method: "POST",
-    headers: {
-      Autorization: `Bearer ${token}`,
-    },
     body: JSON.stringify({
-      name: safeCode(nameInputElement.value),
-      text: safeCode(commentInputElement.value)
+      name: sanitize(nameInputElement.value),
+      text: sanitize(commentInputElement.value)
         .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
         .replaceAll("QUOTE_END", "</div>"),
       forceError: true,
     }),
+    headers: {
+      Authorization: token,
+    },
   }).then((response) => {
     if (response.status === 500) {
       throw new Error("Сервер недоступен");
     } else if (response.status === 400) {
       throw new Error("Неправильный запрос");
+    } else if (response.status === 401) {
+      throw new Error("Нет авторизации");
     } else {
+      return response.json();
+    }
+  });
+};
+
+export const deleteComment = ({ commentId }) => {
+  return fetch(`${commentsURL}/${commentId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    } else if (response.status === 404) {
+      throw new Error("Страница недоступна");
+    } else if (response.status === 500) {
+      throw new Error("Сервер недоступен");
+    } else if (response.status === 201 || response.status === 200) {
+      return response.json();
+    }
+  });
+};
+
+export const toggleLike = ({ id }) => {
+  return fetch(`${commentsURL}/${id}/toggle-like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    } else if (response.status === 404) {
+      throw new Error("Страница недоступна");
+    } else if (response.status === 500) {
+      throw new Error("Сервер недоступен");
+    } else if (response.status === 201 || response.status === 200) {
       return response.json();
     }
   });
@@ -77,7 +117,7 @@ export const loginUser = ({ login, password }) => {
   });
 };
 
-export const regUser = ({ login, password, name }) => {
+export const regUser = ({ login, password }) => {
   return fetch(userURL, {
     method: "POST",
     body: JSON.stringify({
@@ -89,7 +129,7 @@ export const regUser = ({ login, password, name }) => {
     if (response.status === 500) {
       throw new Error("Сервер недоступен");
     } else if (response.status === 400) {
-      throw new Error("Такой пользователь уже существует");
+      throw new Error("Ошибка авторизации");
     } else {
       return response.json();
     }
